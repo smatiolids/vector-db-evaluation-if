@@ -1,0 +1,28 @@
+apiVersion: ifood/v2
+kind: Repository
+tags:
+  - loadtest
+metadata:
+  costCenter: data
+  tribe: ml-platform
+  squad: gen-plat
+  team:
+    alias: ml-platform-genplat-team
+    channel: ml-platform-genplat-notifications
+    email: ml-platform-genplat-team@ifood.com.br
+    owner: vinicius.goncalves
+spec:
+  contents:
+    - name: vector-db-external
+      description: Share the vector DB benchmark implementation with third parties
+      type: other
+      subType:
+        - doc
+      impactLevel: 5
+      links: []
+      deployment:
+        type: none
+        chefRole: ''
+      certifications: []
+      ownerLayerSlug: gen-plat
+
