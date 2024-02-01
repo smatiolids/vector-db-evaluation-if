@@ -11,6 +11,7 @@ python = "^3.8"
 pydantic = "^2.5.3"
 chromadb = "^0.4.22"
 astrapy = "^0.7.2.post1"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

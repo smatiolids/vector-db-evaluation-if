@@ -1,29 +1,26 @@
 import unittest
 import os
 import shutil
-from vector_db_external.vectordb.chroma import ChromaClient
-
-os.environ["CHROMA_SERVER_HOST"] = "dummy"
-os.environ["CHROMA_SERVER_HTTP_PORT"] = "1"
+from vector_db_external.vectordb.astra import AstraDBClient
 
 
-class TestChromaClient(unittest.TestCase):
+class TestAstraClient(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
         # Set up any necessary configurations or mocks here
-        if os.path.exists("database.chroma"):
-            shutil.rmtree("database.chroma")
+        if os.path.exists("database.astra"):
+            shutil.rmtree("database.astra")
 
     @classmethod
     def tearDownClass(self):
         # Clean up any resources used by the tests
-        if os.path.exists("database.chroma"):
-            shutil.rmtree("database.chroma")
+        if os.path.exists("database.astra"):
+            shutil.rmtree("database.astra")
 
     def test_insert_embeddings(self):
         # Create an instance of ChromaClient
-        client = ChromaClient(client_mode="local", database_path="database.chroma")
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
 
         # Mock data
         ids = ["doc1", "doc2", "doc3"]
@@ -43,7 +40,7 @@ class TestChromaClient(unittest.TestCase):
 
     def test_insert_embeddings_without_documents(self):
         # Create an instance of ChromaClient
-        client = ChromaClient(client_mode="local", database_path="database.chroma")
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
 
         # Mock data
         ids = ["doc4"]
@@ -61,7 +58,7 @@ class TestChromaClient(unittest.TestCase):
 
     def test_search_embedding(self):
         # Create an instance of ChromaClient
-        client = ChromaClient(client_mode="local", database_path="database.chroma")
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
 
         # Mock data
         query_embedding = [1.0, 2.0, 3.0]
@@ -82,7 +79,7 @@ class TestChromaClient(unittest.TestCase):
 
     def test_search_embedding_with_filter(self):
         # Create an instance of ChromaClient
-        client = ChromaClient(client_mode="local", database_path="database.chroma")
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
 
         # Mock data
         query_embedding = [1.0, 2.0, 3.0]
@@ -104,8 +101,8 @@ class TestChromaClient(unittest.TestCase):
 
     def test_search_embedding_no_docs(self):
 
-        # Create an instance of ChromaClient
-        client = ChromaClient(client_mode="local", database_path="database.chroma")
+        # Create an instance of AstraDBClient
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
 
         # Mock data
         query_embedding = [700.0, 800.0, 300.0]
