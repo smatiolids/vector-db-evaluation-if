@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, Union
 
 
 class EmbeddingSearchResult(BaseModel):
     ids: List[str]
-    embeddings: List[float] | None
-    metadatas: List[dict]  | List[None] | None
-    documents:  List[str]  | List[None | str] | None
+    embeddings: List[List[float]]
+    metadatas: Union[List[dict], None]
+    documents:  Union[List[str], None]

@@ -184,3 +184,6 @@ go.work
 .DS_Store
 /.idea/
 .vscode
+
+# Data Files
+*.pkl

@@ -3,6 +3,8 @@ import os
 import shutil
 from vector_db_external.vectordb.astra import AstraDBClient
 
+#os.environ["ASTRA_TOKEN"]=""
+#os.environ["ASTRA_API_ENDPOINT"]=""
 
 class TestAstraClient(unittest.TestCase):
 
@@ -19,8 +21,8 @@ class TestAstraClient(unittest.TestCase):
             shutil.rmtree("database.astra")
 
     def test_insert_embeddings(self):
-        # Create an instance of ChromaClient
-        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
+        # Create an instance of AstraDB
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data
         ids = ["doc1", "doc2", "doc3"]
@@ -40,7 +42,7 @@ class TestAstraClient(unittest.TestCase):
 
     def test_insert_embeddings_without_documents(self):
         # Create an instance of ChromaClient
-        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data
         ids = ["doc4"]
@@ -48,7 +50,7 @@ class TestAstraClient(unittest.TestCase):
 
         # Call insert_embeddings without passing documents
         try:
-            client.insert_embeddings(ids=ids, embeddings=embeddings)
+            client.insert_embeddings(ids=ids, embeddings=embeddings, vector_dimension=3)
         except Exception as e:
             # If an exception occurs, fail the test with an informative message
             self.fail(f"Unexpected exception: {e}")
@@ -58,7 +60,7 @@ class TestAstraClient(unittest.TestCase):
 
     def test_search_embedding(self):
         # Create an instance of ChromaClient
-        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data
         query_embedding = [1.0, 2.0, 3.0]
@@ -79,7 +81,7 @@ class TestAstraClient(unittest.TestCase):
 
     def test_search_embedding_with_filter(self):
         # Create an instance of ChromaClient
-        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data
         query_embedding = [1.0, 2.0, 3.0]
@@ -102,7 +104,7 @@ class TestAstraClient(unittest.TestCase):
     def test_search_embedding_no_docs(self):
 
         # Create an instance of AstraDBClient
-        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"])
+        client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data
         query_embedding = [700.0, 800.0, 300.0]

@@ -1,20 +1,15 @@
 import logging
 import os
 from astrapy.db import AstraDB, AstraDBCollection
-from typing import Any, List, Optional
-
-from pydantic import SecretStr
-
+from typing import Any, List, Optional, Dict
 
 from .vectordb_api import DBConfig, VectorDB
 from .search_result import EmbeddingSearchResult
 
-
 log = logging.getLogger(__name__)
 
-
 class AstraConfig(DBConfig):
-    token: SecretStr
+    token: str
     api_url: str
 
 
@@ -30,7 +25,7 @@ class AstraDBClient(VectorDB):
 
     def __init__(
         self,
-        db_config: DBConfig | None = None,
+        db_config: DBConfig = None,
         collection_name: str = "vector_store_benchmark",
         vector_dimension: int = 1536,
         drop_old: bool = False,
@@ -38,14 +33,15 @@ class AstraDBClient(VectorDB):
         **kwargs,
     ):
         self.db_config = db_config if db_config is not None else default_config()
+
         self.collection_name = collection_name
         self.client = AstraDB(
             api_endpoint=self.db_config.api_url,
             token=self.db_config.token,
         )
 
-        self.collection = AstraDBCollection(
-            self.collection_name,  astra_db=self.client, dimensions=vector_dimension)
+        self.collection = self.client.create_collection(
+            collection_name=self.collection_name, dimension=vector_dimension)
 
         if drop_old:
             try:
@@ -58,7 +54,7 @@ class AstraDBClient(VectorDB):
 
     def insert_embeddings(
         self,
-        ids: list[str],
+        ids: List[str],
         embeddings: List[List[float]],
         documents: Optional[List[str]] = None,
         metadata: Optional[List[dict]] = None,
@@ -70,13 +66,21 @@ class AstraDBClient(VectorDB):
             embeddings(list[list[float]]): list of documents' embeddings
             documents(list[str]): list of textual documents
             ids(list[str]): list of ids for each given document
-            metadata(dict[str, str]): dict of key and value for metadata
+            metadata(list[dict[str, str]]): dict of key and value for metadata
         """
 
         astraDocs = [
-            {"_id": doc_id, "document": doc, "$vector": vector, **metadata}
-            for doc_id, vector, doc in zip(ids, embeddings, documents)
+            {"_id": doc_id, "$vector": vector}
+            for doc_id, vector in zip(ids, embeddings)
         ]
+
+        if documents is not None:
+            list(map(lambda doc, rec: rec.update(
+                {"document": doc}), documents, astraDocs))
+
+        if metadata is not None:
+            list(map(lambda metadt, rec: rec.update(
+                {"metadata": metadt}), metadata, astraDocs))
 
         return self.collection.chunked_insert_many(
             documents=astraDocs,
@@ -87,9 +91,9 @@ class AstraDBClient(VectorDB):
 
     def search_embedding(
         self,
-        query: list[float],
+        query: List[float],
         k: int = 10,
-        filters: dict[str, str] | None = None,
+        filters: Dict[str, str] = {},
         **kwargs: Any,
     ) -> List[EmbeddingSearchResult]:
         """Search embeddings from the database.
@@ -101,14 +105,19 @@ class AstraDBClient(VectorDB):
             kwargs: other arguments
 
         """
-        results = self.collection.vector_find_one(
-            query_embeddings=query, limit=k, filter=filters)
+        metadata_filter = {}
+
+        if bool(filters):
+            metadata_filter = {"metadata." + k: v for k, v in filters.items()}
+
+        results = self.collection.vector_find(
+            vector=query, limit=k, filter=metadata_filter)
 
         parsed_results = {
             "ids": (r["_id"] for r in results),
             "embeddings": (r["$vector"] for r in results),
-            "documents": (r["document"] for r in results),
-            "metadatas": (r["metadata"] for r in results)
+            "documents": (r.get("document", None) for r in results),
+            "metadatas": (r.get("metadata", None) for r in results)
         }
 
         embedding_search_result = EmbeddingSearchResult(**parsed_results)

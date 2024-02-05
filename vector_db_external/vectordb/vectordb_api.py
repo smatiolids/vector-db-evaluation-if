@@ -72,7 +72,7 @@ class VectorDB(ABC):
     @abstractmethod
     def insert_embeddings(
         self,
-        ids: list[str],
+        ids: List[str],
         embeddings: List[List[float]],
         documents: Optional[List[str]] = None,
         metadata: Optional[List[dict]] = None,
@@ -91,11 +91,11 @@ class VectorDB(ABC):
     @abstractmethod
     def search_embedding(
         self,
-        query: list[float],
+        query: List[float],
         k: int = 100,
-        filters: dict | None = None,
+        filters: dict = {},
         **kwargs: Any,
-    ) -> list[EmbeddingSearchResult]:
+    ) -> List[EmbeddingSearchResult]:
         """Get k most similar embeddings to query vector.
 
         Args:
