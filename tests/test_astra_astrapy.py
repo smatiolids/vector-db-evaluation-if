@@ -1,10 +1,10 @@
 import unittest
 import os
 import shutil
-from vector_db_external.vectordb.astra import AstraDBClient
+from vector_db_external.vectordb.astra_astrapy import AstraDBClient
 
-#os.environ["ASTRA_TOKEN"]=""
-#os.environ["ASTRA_API_ENDPOINT"]=""
+os.environ["ASTRA_TOKEN"]=""
+os.environ["ASTRA_API_ENDPOINT"]=""
 
 class TestAstraClient(unittest.TestCase):
 
@@ -29,7 +29,7 @@ class TestAstraClient(unittest.TestCase):
         self.assertTrue(True)
 
     def test_insert_embeddings_without_documents(self):
-        # Create an instance of Astra DB Cliente
+        # Create an instance of Astra DB Client
         client = AstraDBClient(token=os.environ["ASTRA_TOKEN"], api_url=os.environ["ASTRA_API_ENDPOINT"], vector_dimension=3)
 
         # Mock data

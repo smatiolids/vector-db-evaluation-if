@@ -15,8 +15,8 @@ class AstraConfig(DBConfig):
 
 def default_config():
     return AstraConfig(
-        token=os.environ.get("ASTRA_API_ENDPOINT", ""),
-        api_url=os.environ["ASTRA_TOKEN"]
+        token=os.environ.get("ASTRA_TOKEN", ""),
+        api_url=os.environ["ASTRA_API_ENDPOINT"]
     )
 
 

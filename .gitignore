@@ -187,3 +187,5 @@ go.work
 
 # Data Files
 *.pkl
+
+README_INTERNAL.md
