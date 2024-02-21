@@ -189,3 +189,9 @@ go.work
 *.pkl
 
 README_INTERNAL.md
+.tar.gz 
+dsbulk-1.11.0
+dsbulk-1.11.0.tar.gz
+secure-connect-vectordb-bench.zip
+load_test/logs
+*.csv

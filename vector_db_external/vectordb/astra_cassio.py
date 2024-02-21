@@ -9,7 +9,6 @@ from .search_result import EmbeddingSearchResult
 
 log = logging.getLogger(__name__)
 
-
 class AstraConfig(DBConfig):
     token: str
     db_id: str
@@ -73,15 +72,15 @@ class AstraDBClient(VectorDB):
             ids(list[str]): list of ids for each given document
             metadata(list[dict[str, str]]): dict of key and value for metadata
         """
-        batch_size = 16
-        ttl_seconds = 600000
+
+        print(kwargs)
+        batch_size = kwargs['batch_size'] if 'batch_size' in kwargs else 16
+        ttl_seconds = kwargs['ttl_seconds'] if 'ttl_seconds' in kwargs else 0
 
         if documents is None:
             documents = [None for _ in ids]
         if metadata is None:
             metadata = [{} for _ in ids]
-        #
-        ttl_seconds = ttl_seconds or self.ttl_seconds
 
         for i in range(0, len(ids), batch_size):
             batch_texts = documents[i: i + batch_size]

@@ -1,0 +1,12 @@
+./dsbulk-1.11.0/bin/dsbulk load \
+  -url '../data/random_dataset.csv' \
+  -k default_keyspace \
+  -t load_test_random_dsbulk \
+  -b "secure-connect-<db_name>.zip" \
+  -u "" \
+  -p "" \
+  --connector.csv.delimiter ";" \
+  --schema.mapping 'row_id=row_id ,metadata_s = metadata_s,embedding = embedding' \
+  --connector.csv.maxCharsPerColumn 500000 \
+  --batch.maxBatchStatements 8 \
+  --batch.mode "REPLICA_SET"
